@@ -163,32 +163,32 @@ endif
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXE_OUTPUTS += \
-LaunchProj0_TMS57012.out \
+FreeRTOS_TMS57012_ChangePriority.out \
 
 EXE_OUTPUTS__QUOTED += \
-"LaunchProj0_TMS57012.out" \
+"FreeRTOS_TMS57012_ChangePriority.out" \
 
 BIN_OUTPUTS += \
-LaunchProj0_TMS57012.hex \
+FreeRTOS_TMS57012_ChangePriority.hex \
 
 BIN_OUTPUTS__QUOTED += \
-"LaunchProj0_TMS57012.hex" \
+"FreeRTOS_TMS57012_ChangePriority.hex" \
 
 
 # All Target
-all: LaunchProj0_TMS57012.out
+all: FreeRTOS_TMS57012_ChangePriority.out
 
 # Tool invocations
-LaunchProj0_TMS57012.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
+FreeRTOS_TMS57012_ChangePriority.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: ARM Linker'
-	"E:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.4.LTS/bin/armcl" -mv7R4 --code_state=32 --float_support=VFPv3D16 --abi=eabi -g --display_error_number --diag_wrap=off --diag_warning=225 --enum_type=packed -z -m"LaunchProj0_TMS57012.map" --heap_size=0x800 --stack_size=0x800 -i"E:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.4.LTS/lib" -i"E:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.4.LTS/include" --reread_libs --display_error_number --diag_wrap=off --warn_sections --xml_link_info="LaunchProj0_TMS57012_linkInfo.xml" --rom_model --be32 -o "LaunchProj0_TMS57012.out" $(ORDERED_OBJS)
+	"E:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.4.LTS/bin/armcl" -mv7R4 --code_state=32 --float_support=VFPv3D16 --abi=eabi -g --display_error_number --diag_wrap=off --diag_warning=225 --enum_type=packed -z -m"FreeRTOS_TMS57012_ChangePriority.map" --heap_size=0x800 --stack_size=0x800 -i"E:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.4.LTS/lib" -i"E:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.4.LTS/include" --reread_libs --display_error_number --diag_wrap=off --warn_sections --xml_link_info="FreeRTOS_TMS57012_ChangePriority_linkInfo.xml" --rom_model --be32 -o "FreeRTOS_TMS57012_ChangePriority.out" $(ORDERED_OBJS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
-LaunchProj0_TMS57012.hex: $(EXE_OUTPUTS)
+FreeRTOS_TMS57012_ChangePriority.hex: $(EXE_OUTPUTS)
 	@echo 'Invoking: ARM Hex Utility'
-	"E:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.4.LTS/bin/armhex"  -o "LaunchProj0_TMS57012.hex" $(EXE_OUTPUTS__QUOTED)
+	"E:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.4.LTS/bin/armhex"  -o "FreeRTOS_TMS57012_ChangePriority.hex" $(EXE_OUTPUTS__QUOTED)
 	@echo 'Finished building: $@'
 	@echo ' '
 

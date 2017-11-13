@@ -65,22 +65,31 @@ typedef struct TaskParam_t
 }TaskParam;
 
 TaskParam xTP1, xTP2, xTP3, xTP4;
-
 volatile unsigned long ulIdleCycleCount = 0;
 
 void vTask1(void *pvParameters)
 {
     volatile long ul;
     volatile TaskParam *pxTaskParam;
+    static int cntPriority = 0;
+    unsigned portBASE_TYPE uxPriority;
+    /* Получить приоритет Задачи 1. Он равен 2 и не изменяется на протяжении всего времени работы учебной программы № 1 */
+    uxPriority = uxTaskPriorityGet( NULL );
 
     pxTaskParam = (TaskParam *) pvParameters;
     serialSendln( (const char*)pxTaskParam->string);
 
     while (1)
     {
+        if (cntPriority++ >= 10)
+        {
+            cntPriority = 0;
+            serialSendln("To raise the Task2 priority");
+            vTaskPrioritySet( xTask2Handle, ( uxPriority + 1 ) );
+        }
         gioSetBit(gioPORTB, 1, gioGetBit(gioPORTB, 1) ^ 1);
         serialSendln("1\r\n");
-        vTaskDelay(1000); // 100ms
+        vTaskDelay(100); // 100ms
     }
 }
 
@@ -88,21 +97,35 @@ void vTask2(void *pvParameters)
 {
     volatile long ul;
     volatile TaskParam *pxTaskParam;
-    portTickType xLastWakeTime;
+    //portTickType xLastWakeTime;
     char arr[10] ="" ;
+    unsigned portBASE_TYPE uxPriority;
+    static int cntPriority = 0;
 
     pxTaskParam = (TaskParam *) pvParameters;
     serialSendln( (const char*)pxTaskParam->string);
 
-    xLastWakeTime = xTaskGetTickCount();
+    //xLastWakeTime = xTaskGetTickCount();
+    uxPriority = uxTaskPriorityGet( NULL );
     while (1)
     {
+        if (cntPriority++ >= 10)
+        {
+            cntPriority = 0;
+            serialSendln("To lower the Task2 priority");
+            if (uxPriority > 2)
+            {
+                vTaskPrioritySet( NULL, (uxPriority - 2));
+            }
+        }
         gioSetBit(gioPORTB, 2, gioGetBit(gioPORTB, 2) ^ 1);
-        serialSendln("Count = ");
+        serialSendln("2\r\n");
+        /*serialSendln("Count = ");
         ltoa(ulIdleCycleCount, arr) ;
         serialSendln (&arr[0] );
-        serialSendln("\r\n");
-        vTaskDelayUntil( &xLastWakeTime, ( 300 / portTICK_RATE_MS ) );
+        serialSendln("\r\n");*/
+        // vTaskDelayUntil( &xLastWakeTime, ( 300 / portTICK_RATE_MS ) );
+        vTaskDelay(300); // 300ms
     }
 }
 
@@ -149,8 +172,11 @@ void vApplicationIdleHook(void)
     ulIdleCycleCount++;
 }
 
+
 int main(void)
 {
+    char arr[10] ="" ;
+    long heapSize;
     strcpy(xTP1.string, "Task 1 is running\r\n");
     xTP1.period = 10000000L;
 
@@ -163,11 +189,11 @@ int main(void)
     _enable_IRQ(); // global interrupt enable
     serialInit(115200); // SFU Serial
 
-    serialSendln("hello!\r\n");
+    serialSendln("\r\nHello!\r\n");
 
     gioInit();
 
-    if (xTaskCreate(vTask1, "Task1", configMINIMAL_STACK_SIZE, (void*)&xTP1, 1, &xTask1Handle) != pdTRUE)
+    if ((xTaskCreate( vTask1, "Task 1", configMINIMAL_STACK_SIZE, (void*)&xTP1, 2, &xTask1Handle )) != pdTRUE)
     {
         serialSendln("Couldn't Create Task1\r\n");
         while (1);
@@ -176,9 +202,9 @@ int main(void)
     {
         serialSendln("Created task 1\r\n");
     }
-    vTaskDelay(1000);
 
-    if (xTaskCreate(vTask2, "Task2", configMINIMAL_STACK_SIZE, (void*)&xTP2, 2, &xTask2Handle) != pdTRUE)
+
+    if ((xTaskCreate( vTask2, "Task 2", configMINIMAL_STACK_SIZE, (void*)&xTP2, 1, &xTask2Handle )) != pdTRUE)
     {
         serialSendln("Couldn't Create Task2\r\n");
         while (1);
@@ -187,9 +213,9 @@ int main(void)
     {
         serialSendln("Created task 2\r\n");
     }
-    vTaskDelay(1000);
 
-    if (xTaskCreate(UART_Task, "UART_Task", configMINIMAL_STACK_SIZE, (void*)&xTP3, 3, &xUARTTaskHandle) != pdTRUE)
+
+    /*if (xTaskCreate(UART_Task, "UART_Task", configMINIMAL_STACK_SIZE, (void*)&xTP3, 5, &xUARTTaskHandle) != pdTRUE)
     {
         serialSendln("Couldn't Create UART Task\r\n");
         while (1);
@@ -197,10 +223,10 @@ int main(void)
     else
     {
         serialSendln("Created UART Task\r\n");
-    }
-    vTaskDelay(1000);
+    }*/
 
-    if (xTaskCreate(UARTEcho, "UART_Echo", configMINIMAL_STACK_SIZE, (void*)&xTP4, 4, &xUARTEchoHandle) != pdTRUE)
+
+    /*if (xTaskCreate(UARTEcho, "UART_Echo", configMINIMAL_STACK_SIZE, (void*)&xTP4, 1, &xUARTEchoHandle) != pdTRUE)
     {
         serialSendln("Couldn't Create UART Echo Task\r\n");
         while (1);
@@ -208,9 +234,15 @@ int main(void)
     else
     {
         serialSendln("Created UART Echo Task\r\n");
-    }
+    }*/
+
+    heapSize = xPortGetFreeHeapSize();
+    serialSendln("Heap Size = ");
+    ltoa(heapSize, arr);
+    serialSendln(&arr[0]);
+    serialSendln("\r\n");
+
     vTaskStartScheduler();
-    vTaskDelay(1000);
 
     while (1);
 
