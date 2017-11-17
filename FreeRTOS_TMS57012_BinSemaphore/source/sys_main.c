@@ -53,7 +53,10 @@
 #include "FreeRTOS.h"
 #include "os_task.h"
 #include "os_queue.h"
+#include "os_semphr.h"
+//#include "os_portasm.asm"
 #include "gio.h"
+#include "adc.h"
 #include "SFU_Serial.h"
 
 xTaskHandle xTask1Handle, xTask2Handle;
@@ -68,84 +71,45 @@ typedef struct TaskParam_t
 TaskParam xTP1, xTP2, xTP3, xTP4;
 volatile unsigned long ulIdleCycleCount = 0;
 
-/* Номера функций-передатчиков сообщений */
-#define mainSENDER_1 1
-#define mainSENDER_2 2
 
-typedef struct
+xSemaphoreHandle xBinarySemaphore;
+
+
+static void vPeriodicTask(void *pvParameters)
 {
-    unsigned char ucValue;
-    unsigned char ucSource;
-} xData;
-
-static const xData xStructsToSend[2] =
-{
-  {
-    100, mainSENDER_1
-  }, /* Используется задачей-передатчиком 1 */
-
-  {
-    200, mainSENDER_2
-  } /* Используется задачей-передатчиком 2 */
-};
-
-void vSenderTask(void *pvParameters)
-{
-
-    /* xQueueSendToBack() */
-    portBASE_TYPE xStatus;
-
-
-    while (1)
+    for (;;)
     {
-        // vTaskDelay(300); // 300ms
-        xStatus = xQueueSendToBack(xQueue, pvParameters, 100 / portTICK_RATE_MS);
-        if (xStatus != pdPASS)
-        {
-            serialSendln("Could not send to the queue.\r\n");
-        }
-        taskYIELD();
+        vTaskDelay(500 / portTICK_RATE_MS);
+        serialSendln("Periodic task - About to generate an interrupt.\r\n");
+        //__asm{   int 0x82} /* Сгенерировать прерывание MS-DOS */
+        serialSendln("Periodic task - Interrupt generated.\r\n\r\n\r\n");
     }
 }
 
-void vReceiverTask(void *pvParameters)
+/* Обработчик прерывания */
+/*static void __interrupt __far vExampleInterruptHandler( void )
+{
+    static portBASE_TYPE xHigherPriorityTaskWoken;
+    xHigherPriorityTaskWoken = pdFALSE;
+
+    xSemaphoreGiveFromISR (xBinarySemaphore, &xHigherPriorityTaskWoken );
+    if( xHigherPriorityTaskWoken == pdTRUE )
+    {
+        portSWITCH_CONTEXT();
+    }
+}*/
+
+static void vHandlerTask(void *pvParameters)
 {
 
-    xData xReceivedStructure;
-    long lReceivedValue;
-    char _arr[10] = "";
-    portBASE_TYPE xStatus;
-
-    while (1)
+    for (;;)
     {
 
-        lReceivedValue = uxQueueMessagesWaiting(xQueue);
-        if (lReceivedValue != 3)
-        {
-            serialSendln("Queue should have been full!\r\n");
-            serialSendln("Queue = "); ltoa(lReceivedValue, _arr); serialSendln(&_arr[0]); serialSendln(" element(s)\r\n");
-        }
+        xSemaphoreTake(xBinarySemaphore, portMAX_DELAY);
 
-        xStatus = xQueueReceive(xQueue, &xReceivedStructure, 0);
-        if (xStatus == pdPASS)
-        {
-            if (xReceivedStructure.ucSource == mainSENDER_1)
-            {
-                serialSendln("From Sender 1 = "); ltoa(xReceivedStructure.ucValue, _arr); serialSendln(&_arr[0]); serialSendln("\r\n");
-            }
-            else
-            {
-                serialSendln("From Sender 2 = "); ltoa(xReceivedStructure.ucValue, _arr); serialSendln(&_arr[0]); serialSendln("\r\n");
-            }
-        }
-        else
-        {
-            serialSendln("Could not receive from the queue.\r\n");
-        }
+        serialSendln("Handler task - Processing event.\r\n");
     }
 }
-
-
 void vApplicationIdleHook(void)
 {
     ulIdleCycleCount++;
@@ -154,35 +118,69 @@ void vApplicationIdleHook(void)
 
 int main(void)
 {
-    char arr[10] ="" ;
+    unsigned char command[8];
+    char arr[10] = "";
     long heapSize;
 
     _enable_IRQ();
     serialInit(115200);
 
-    serialSendln("\r\nQueue example running!\r\n");
+    serialSendln("\r\nBinary Semaphore example running!\r\n");
 
     gioInit();
+    // adcInit();
+    // adcStartConversion(adcREG1, adcGROUP0);
 
-    xQueue = xQueueCreate(3, sizeof(xData));
+    adcData_t adc_data; //ADC Data Structure
+    adcData_t *adc_data_ptr = &adc_data; //ADC Data Pointer
+    volatile unsigned int NumberOfChars, value; //Declare variables
 
-    if (xQueue != NULL)
+    adcInit(); //Initializes the ADC module
+    while (1)
     {
-        xTaskCreate(vSenderTask, "Sender1", configMINIMAL_STACK_SIZE, (void *) &(xStructsToSend[0]), 2, NULL);
-        xTaskCreate(vSenderTask, "Sender2", configMINIMAL_STACK_SIZE, (void *) &(xStructsToSend[1]), 2, NULL);
+        adcStartConversion(adcREG1, 1U); //Start ADC conversion
+        while (!adcIsConversionComplete(adcREG1, 1U))
+            ; //Wait for ADC conversion
+        adcGetData(adcREG1, 1U, adc_data_ptr); //Store conversion into ADC pointer
+        value = (unsigned int) adc_data_ptr->value;
+        NumberOfChars = ltoa(value, (char *) command);
+        serialSendln("Adc = "); ltoa(value, arr); serialSendln(&arr[0]); serialSendln("\r\n");
+    }
 
-        xTaskCreate(vReceiverTask, "Receiver", configMINIMAL_STACK_SIZE, NULL, 1, NULL);
+    vSemaphoreCreateBinary(xBinarySemaphore);
+    //_dos_setvect(0x82, vExampleInterruptHandler);
+
+    if (xBinarySemaphore != NULL)
+    {
+
+        if ((xTaskCreate(vHandlerTask, "Handler", configMINIMAL_STACK_SIZE, NULL, 3, NULL)) != pdTRUE)
+        {
+            serialSendln("Couldn't Create vHandlerTask\r\n");
+            while (1);
+        }
+        else
+        {
+            serialSendln("Created vHandlerTask\r\n");
+        }
+
+        if ((xTaskCreate(vPeriodicTask, "Periodic", configMINIMAL_STACK_SIZE, NULL, 1, NULL)) != pdTRUE)
+        {
+            serialSendln("Couldn't Create vPeriodicTask\r\n");
+            while (1);
+        }
+        else
+        {
+            serialSendln("Created vPeriodicTask\r\n");
+        }
 
         heapSize = xPortGetFreeHeapSize();
-        serialSendln("Heap Size = "); ltoa(heapSize, arr); serialSendln(&arr[0]); serialSendln("\r\n");
+        serialSendln("Heap Size = ");
+        ltoa(heapSize, arr);
+        serialSendln(&arr[0]);
+        serialSendln("\r\n");
 
         vTaskStartScheduler();
     }
-    else
-    {
-        serialSendln("Couldn't Create Queue\r\n");
-    }
-
 
     while (1);
 

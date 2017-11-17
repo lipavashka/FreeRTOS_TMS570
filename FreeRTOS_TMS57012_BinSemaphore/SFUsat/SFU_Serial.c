@@ -8,9 +8,13 @@
 
 
 
-#include "SFU_Serial.h"
+
 #include <string.h>
 #include <stdlib.h>
+#include "SFU_Serial.h"
+
+extern void *pvPortMalloc( size_t );
+extern void vPortFree( void *);
 
 char currChar;
 
@@ -40,18 +44,26 @@ void serialSend(unsigned char* myStr){ // simple, just sends what's given to it 
 	sciReceive(scilinREG, 1, (unsigned char *)&currChar);
 }*/
 
-void serialSendln(const char* stringToSend){
-    /*const char append[3] = "\r\n";
+/*void serialSendln(const char* stringToSend){
+	const char append[3] = "\r\n";
 
-    char* extended;
-    extended = malloc(strlen(stringToSend)+1+2); // enough to hold everything. 1 captures the null string terminator
-    strcpy(extended, stringToSend);
-    strcat(extended, append);*/
+	char* extended;
+	extended = pvPortMalloc(strlen(stringToSend)+1+2); // enough to hold everything. 1 captures the null string terminator
+	strcpy(extended, stringToSend);
+	strcat(extended, append);
+	int stringLength = strlen(extended);
+	sciSend(scilinREG, stringLength, (unsigned char *) extended); // does not like strlen + 1 to be inlined, but works fine when broken out to another var
+
+	vPortFree(extended);
+
+	sciReceive(scilinREG, 1, (unsigned char *)&currChar);
+}*/
+
+void serialSendln(const char* stringToSend)
+{
     int stringLength = strlen(stringToSend);
+
     sciSend(scilinREG, stringLength, (unsigned char *) stringToSend); // does not like strlen + 1 to be inlined, but works fine when broken out to another var
-
-    //free(extended);
-
     sciReceive(scilinREG, 1, (unsigned char *)&currChar);
 }
 

@@ -135,27 +135,27 @@ enum adcConversionStatus
 
 enum adc1HwTriggerSource
 {
-	ADC1_EVENT = 0U,       /**< Alias for event pin             */
-	ADC1_HET1_8 = 1U,      /**< Alias for HET1 pin 8            */
-	ADC1_HET1_10 = 2U,     /**< Alias for HET1 pin 10           */
-	ADC1_RTI_COMP0 = 3U,   /**< Alias for RTI compare 0 match   */
-	ADC1_HET1_12 = 4U,     /**< Alias for HET1 pin 12           */
-	ADC1_HET1_14 = 5U,     /**< Alias for HET1 pin 14           */
-	ADC1_GIOB0 = 6U,       /**< Alias for GIO port b pin 0      */
-	ADC1_GIOB1 = 7U,       /**< Alias for GIO port b pin 1      */
+    ADC1_EVENT = 0U,       /**< Alias for event pin             */
+    ADC1_HET1_8 = 1U,      /**< Alias for HET1 pin 8            */
+    ADC1_HET1_10 = 2U,     /**< Alias for HET1 pin 10           */
+    ADC1_RTI_COMP0 = 3U,   /**< Alias for RTI compare 0 match   */
+    ADC1_HET1_12 = 4U,     /**< Alias for HET1 pin 12           */
+    ADC1_HET1_14 = 5U,     /**< Alias for HET1 pin 14           */
+    ADC1_GIOB0 = 6U,       /**< Alias for GIO port b pin 0      */
+    ADC1_GIOB1 = 7U,       /**< Alias for GIO port b pin 1      */
 
-	ADC1_HET2_5 = 1U,      /**< Alias for HET2 pin 5            */
-	ADC1_HET1_27 = 2U,     /**< Alias for HET1 pin 27           */
-	ADC1_HET1_17 = 4U,     /**< Alias for HET1 pin 17           */
-	ADC1_HET1_19 = 5U,     /**< Alias for HET1 pin 19           */
-	ADC1_HET1_11 = 6U,     /**< Alias for HET1 pin 11           */
-	ADC1_HET2_13 = 7U,     /**< Alias for HET2 pin 13           */
+    ADC1_HET2_5 = 1U,      /**< Alias for HET2 pin 5            */
+    ADC1_HET1_27 = 2U,     /**< Alias for HET1 pin 27           */
+    ADC1_HET1_17 = 4U,     /**< Alias for HET1 pin 17           */
+    ADC1_HET1_19 = 5U,     /**< Alias for HET1 pin 19           */
+    ADC1_HET1_11 = 6U,     /**< Alias for HET1 pin 11           */
+    ADC1_HET2_13 = 7U,     /**< Alias for HET2 pin 13           */
 
-	ADC1_EPWM_B = 1U,      /**< Alias for B Signal EPWM         */
-	ADC1_EPWM_A1 = 3U,     /**< Alias for A1 Signal EPWM        */	
-	ADC1_HET2_1 = 5U,      /**< Alias for HET2 pin 1            */
-	ADC1_EPWM_A2 = 6U,     /**< Alias for A2 Signal EPWM        */
-	ADC1_EPWM_AB = 7U      /**< Alias for AB Signal EPWM        */	
+    ADC1_EPWM_B = 1U,      /**< Alias for B Signal EPWM         */
+    ADC1_EPWM_A1 = 3U,     /**< Alias for A1 Signal EPWM        */
+    ADC1_HET2_1 = 5U,      /**< Alias for HET2 pin 1            */
+    ADC1_EPWM_A2 = 6U,     /**< Alias for A2 Signal EPWM        */
+    ADC1_EPWM_AB = 7U      /**< Alias for AB Signal EPWM        */
 
 };
 
@@ -166,26 +166,26 @@ enum adc1HwTriggerSource
 
 enum adc2HwTriggerSource
 {
-	ADC2_EVENT = 0U,       /**< Alias for event pin             */
-	ADC2_HET1_8 = 1U,      /**< Alias for HET1 pin 8            */
-	ADC2_HET1_10 = 2U,     /**< Alias for HET1 pin 10           */
-	ADC2_RTI_COMP0 = 3U,   /**< Alias for RTI compare 0 match   */
-	ADC2_HET1_12 = 4U,     /**< Alias for HET1 pin 12           */
-	ADC2_HET1_14 = 5U,     /**< Alias for HET1 pin 14           */
-	ADC2_GIOB0 = 6U,       /**< Alias for GIO port b pin 0      */
-	ADC2_GIOB1 = 7U,       /**< Alias for GIO port b pin 1      */
-	ADC2_HET2_5 = 1U,      /**< Alias for HET2 pin 5            */
-	ADC2_HET1_27 = 2U,     /**< Alias for HET1 pin 27           */
-	ADC2_HET1_17 = 4U,     /**< Alias for HET1 pin 17           */
-	ADC2_HET1_19 = 5U,     /**< Alias for HET1 pin 19           */
-	ADC2_HET1_11 = 6U,     /**< Alias for HET1 pin 11           */
-	ADC2_HET2_13 = 7U,     /**< Alias for HET2 pin 13           */
-	
-	ADC2_EPWM_B = 1U,      /**< Alias for B Signal EPWM         */
-	ADC2_EPWM_A1 = 3U,     /**< Alias for A1 Signal EPWM        */	
-	ADC2_HET2_1 = 5U,      /**< Alias for HET2 pin 1            */
-	ADC2_EPWM_A2 = 6U,     /**< Alias for A2 Signal EPWM        */
-	ADC2_EPWM_AB = 7U      /**< Alias for AB Signal EPWM        */	
+    ADC2_EVENT = 0U,       /**< Alias for event pin             */
+    ADC2_HET1_8 = 1U,      /**< Alias for HET1 pin 8            */
+    ADC2_HET1_10 = 2U,     /**< Alias for HET1 pin 10           */
+    ADC2_RTI_COMP0 = 3U,   /**< Alias for RTI compare 0 match   */
+    ADC2_HET1_12 = 4U,     /**< Alias for HET1 pin 12           */
+    ADC2_HET1_14 = 5U,     /**< Alias for HET1 pin 14           */
+    ADC2_GIOB0 = 6U,       /**< Alias for GIO port b pin 0      */
+    ADC2_GIOB1 = 7U,       /**< Alias for GIO port b pin 1      */
+    ADC2_HET2_5 = 1U,      /**< Alias for HET2 pin 5            */
+    ADC2_HET1_27 = 2U,     /**< Alias for HET1 pin 27           */
+    ADC2_HET1_17 = 4U,     /**< Alias for HET1 pin 17           */
+    ADC2_HET1_19 = 5U,     /**< Alias for HET1 pin 19           */
+    ADC2_HET1_11 = 6U,     /**< Alias for HET1 pin 11           */
+    ADC2_HET2_13 = 7U,     /**< Alias for HET2 pin 13           */
+
+    ADC2_EPWM_B = 1U,      /**< Alias for B Signal EPWM         */
+    ADC2_EPWM_A1 = 3U,     /**< Alias for A1 Signal EPWM        */
+    ADC2_HET2_1 = 5U,      /**< Alias for HET2 pin 1            */
+    ADC2_EPWM_A2 = 6U,     /**< Alias for A2 Signal EPWM        */
+    ADC2_EPWM_AB = 7U      /**< Alias for AB Signal EPWM        */
 
 };
 
@@ -229,53 +229,53 @@ typedef struct adc_config_reg
     uint32 CONFIG_PARCR;
 }adc_config_reg_t;
 
-#define ADC1_OPMODECR_CONFIGVALUE		0x81140001U
-#define ADC1_CLOCKCR_CONFIGVALUE		(7U)
+#define ADC1_OPMODECR_CONFIGVALUE       0x81140001U
+#define ADC1_CLOCKCR_CONFIGVALUE        (7U)
 
-#define ADC1_G0MODECR_CONFIGVALUE		((uint32)ADC_12_BIT | (uint32)0x00000000U | (uint32)0x00000000U)
-#define ADC1_G1MODECR_CONFIGVALUE		((uint32)ADC_12_BIT | (uint32)0x00000000U | (uint32)0x00000000U | (uint32)0x00000000U)
-#define ADC1_G2MODECR_CONFIGVALUE		((uint32)ADC_12_BIT | (uint32)0x00000000U | (uint32)0x00000000U | (uint32)0x00000000U)
+#define ADC1_G0MODECR_CONFIGVALUE       ((uint32)ADC_12_BIT | (uint32)0x00000000U | (uint32)0x00000000U)
+#define ADC1_G1MODECR_CONFIGVALUE       ((uint32)ADC_12_BIT | (uint32)0x00000000U | (uint32)0x00000000U | (uint32)0x00000000U)
+#define ADC1_G2MODECR_CONFIGVALUE       ((uint32)ADC_12_BIT | (uint32)0x00000000U | (uint32)0x00000000U | (uint32)0x00000000U)
 
-#define ADC1_G0SRC_CONFIGVALUE 			((uint32)0x00000000U | (uint32)ADC1_EVENT)
-#define ADC1_G1SRC_CONFIGVALUE 			((uint32)0x00000000U | (uint32)ADC1_EVENT)
-#define ADC1_G2SRC_CONFIGVALUE 			((uint32)0x00000000U | (uint32)ADC1_EVENT)
+#define ADC1_G0SRC_CONFIGVALUE          ((uint32)0x00000000U | (uint32)ADC1_EVENT)
+#define ADC1_G1SRC_CONFIGVALUE          ((uint32)0x00000000U | (uint32)ADC1_EVENT)
+#define ADC1_G2SRC_CONFIGVALUE          ((uint32)0x00000000U | (uint32)ADC1_EVENT)
 
-#define ADC1_BNDCR_CONFIGVALUE			((uint32)((uint32)8U << 16U)|(8U + 8U))
-#define ADC1_BNDEND_CONFIGVALUE			(2U)
+#define ADC1_BNDCR_CONFIGVALUE          ((uint32)((uint32)8U << 16U)|(8U + 8U))
+#define ADC1_BNDEND_CONFIGVALUE         (2U)
 
-#define ADC1_G0SAMP_CONFIGVALUE			(1U)
-#define ADC1_G1SAMP_CONFIGVALUE			(1U)
-#define ADC1_G2SAMP_CONFIGVALUE			(1U)
+#define ADC1_G0SAMP_CONFIGVALUE         (1U)
+#define ADC1_G1SAMP_CONFIGVALUE         (1U)
+#define ADC1_G2SAMP_CONFIGVALUE         (1U)
 
-#define ADC1_G0SAMPDISEN_CONFIGVALUE	((uint32)((uint32)0U << 8U) | 0x00000000U)
-#define ADC1_G1SAMPDISEN_CONFIGVALUE	((uint32)((uint32)0U << 8U) | 0x00000000U)
-#define ADC1_G2SAMPDISEN_CONFIGVALUE	((uint32)((uint32)0U << 8U) | 0x00000000U)
+#define ADC1_G0SAMPDISEN_CONFIGVALUE    ((uint32)((uint32)0U << 8U) | 0x00000000U)
+#define ADC1_G1SAMPDISEN_CONFIGVALUE    ((uint32)((uint32)0U << 8U) | 0x00000000U)
+#define ADC1_G2SAMPDISEN_CONFIGVALUE    ((uint32)((uint32)0U << 8U) | 0x00000000U)
 
-#define ADC1_PARCR_CONFIGVALUE			(0x00000005U)
+#define ADC1_PARCR_CONFIGVALUE          (0x00000005U)
 
-#define ADC2_OPMODECR_CONFIGVALUE		0x81140001U
-#define ADC2_CLOCKCR_CONFIGVALUE		(7U)
+#define ADC2_OPMODECR_CONFIGVALUE       0x81140001U
+#define ADC2_CLOCKCR_CONFIGVALUE        (7U)
 
-#define ADC2_G0MODECR_CONFIGVALUE		((uint32)ADC_12_BIT | (uint32)0x00000000U | (uint32)0x00000000U)
-#define ADC2_G1MODECR_CONFIGVALUE		((uint32)ADC_12_BIT | (uint32)0x00000000U | (uint32)0x00000000U | (uint32)0x00000000U)
-#define ADC2_G2MODECR_CONFIGVALUE		((uint32)ADC_12_BIT | (uint32)0x00000000U | (uint32)0x00000000U | (uint32)0x00000000U)
+#define ADC2_G0MODECR_CONFIGVALUE       ((uint32)ADC_12_BIT | (uint32)0x00000000U | (uint32)0x00000000U)
+#define ADC2_G1MODECR_CONFIGVALUE       ((uint32)ADC_12_BIT | (uint32)0x00000000U | (uint32)0x00000000U | (uint32)0x00000000U)
+#define ADC2_G2MODECR_CONFIGVALUE       ((uint32)ADC_12_BIT | (uint32)0x00000000U | (uint32)0x00000000U | (uint32)0x00000000U)
 
-#define ADC2_G0SRC_CONFIGVALUE 			((uint32)0x00000000U | (uint32)ADC2_EVENT)
-#define ADC2_G1SRC_CONFIGVALUE 			((uint32)0x00000000U | (uint32)ADC2_EVENT)
-#define ADC2_G2SRC_CONFIGVALUE 			((uint32)0x00000000U | (uint32)ADC2_EVENT)
+#define ADC2_G0SRC_CONFIGVALUE          ((uint32)0x00000000U | (uint32)ADC2_EVENT)
+#define ADC2_G1SRC_CONFIGVALUE          ((uint32)0x00000000U | (uint32)ADC2_EVENT)
+#define ADC2_G2SRC_CONFIGVALUE          ((uint32)0x00000000U | (uint32)ADC2_EVENT)
 
-#define ADC2_BNDCR_CONFIGVALUE			((uint32)((uint32)8U << 16U)|(8U + 8U))
-#define ADC2_BNDEND_CONFIGVALUE			(2U)
+#define ADC2_BNDCR_CONFIGVALUE          ((uint32)((uint32)8U << 16U)|(8U + 8U))
+#define ADC2_BNDEND_CONFIGVALUE         (2U)
 
-#define ADC2_G0SAMP_CONFIGVALUE			(1U)
-#define ADC2_G1SAMP_CONFIGVALUE			(1U)
-#define ADC2_G2SAMP_CONFIGVALUE			(1U)
+#define ADC2_G0SAMP_CONFIGVALUE         (1U)
+#define ADC2_G1SAMP_CONFIGVALUE         (1U)
+#define ADC2_G2SAMP_CONFIGVALUE         (1U)
 
-#define ADC2_G0SAMPDISEN_CONFIGVALUE	((uint32)((uint32)0U << 8U) | 0x00000000U)
-#define ADC2_G1SAMPDISEN_CONFIGVALUE	((uint32)((uint32)0U << 8U) | 0x00000000U)
-#define ADC2_G2SAMPDISEN_CONFIGVALUE	((uint32)((uint32)0U << 8U) | 0x00000000U)
+#define ADC2_G0SAMPDISEN_CONFIGVALUE    ((uint32)((uint32)0U << 8U) | 0x00000000U)
+#define ADC2_G1SAMPDISEN_CONFIGVALUE    ((uint32)((uint32)0U << 8U) | 0x00000000U)
+#define ADC2_G2SAMPDISEN_CONFIGVALUE    ((uint32)((uint32)0U << 8U) | 0x00000000U)
 
-#define ADC2_PARCR_CONFIGVALUE			(0x00000005U)
+#define ADC2_PARCR_CONFIGVALUE          (0x00000005U)
 
 /** 
  *  @defgroup ADC ADC
@@ -283,7 +283,7 @@ typedef struct adc_config_reg
  *  
  *  The microcontroller includes two 12-bit ADC modules with selectable 10-bit or 12-bit resolution
  *
- *	Related Files
+ *  Related Files
  *   - reg_adc.h
  *   - adc.h
  *   - adc.c
