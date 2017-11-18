@@ -107,8 +107,6 @@ int main(void)
     serialSendln("\r\nBinary Semaphore example running!\r\n");
 
     gioInit();
-    // adcInit();
-    // adcStartConversion(adcREG1, adcGROUP0);
 
     adcData_t adc_data; //ADC Data Structure
     adcData_t *adc_data_ptr = &adc_data; //ADC Data Pointer
