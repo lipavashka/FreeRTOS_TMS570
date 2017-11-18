@@ -77,37 +77,27 @@ xSemaphoreHandle xBinarySemaphore;
 
 static void vPeriodicTask(void *pvParameters)
 {
-    for (;;)
+    while (1)
     {
-        vTaskDelay(500 / portTICK_RATE_MS);
+        vTaskDelay(100);
         serialSendln("Periodic task - About to generate an interrupt.\r\n");
-        //__asm{   int 0x82} /* Сгенерировать прерывание MS-DOS */
+        adcStartConversion(adcREG1, 1U);
         serialSendln("Periodic task - Interrupt generated.\r\n\r\n\r\n");
+        gioSetBit(gioPORTB, 1, gioGetBit(gioPORTB, 1) ^ 1);
     }
 }
 
-/* Обработчик прерывания */
-/*static void __interrupt __far vExampleInterruptHandler( void )
-{
-    static portBASE_TYPE xHigherPriorityTaskWoken;
-    xHigherPriorityTaskWoken = pdFALSE;
-
-    xSemaphoreGiveFromISR (xBinarySemaphore, &xHigherPriorityTaskWoken );
-    if( xHigherPriorityTaskWoken == pdTRUE )
-    {
-        portSWITCH_CONTEXT();
-    }
-}*/
 
 static void vHandlerTask(void *pvParameters)
 {
 
-    for (;;)
+    while (1)
     {
 
         xSemaphoreTake(xBinarySemaphore, portMAX_DELAY);
 
         serialSendln("Handler task - Processing event.\r\n");
+        gioSetBit(gioPORTB, 2, gioGetBit(gioPORTB, 2) ^ 1);
     }
 }
 void vApplicationIdleHook(void)
@@ -136,16 +126,16 @@ int main(void)
     volatile unsigned int NumberOfChars, value; //Declare variables
 
     adcInit(); //Initializes the ADC module
-    while (1)
+
+    /*while (1)
     {
         adcStartConversion(adcREG1, 1U); //Start ADC conversion
-        while (!adcIsConversionComplete(adcREG1, 1U))
-            ; //Wait for ADC conversion
+        // while (!adcIsConversionComplete(adcREG1, 1U)); //Wait for ADC conversion
         adcGetData(adcREG1, 1U, adc_data_ptr); //Store conversion into ADC pointer
         value = (unsigned int) adc_data_ptr->value;
         NumberOfChars = ltoa(value, (char *) command);
         serialSendln("Adc = "); ltoa(value, arr); serialSendln(&arr[0]); serialSendln("\r\n");
-    }
+    }*/
 
     vSemaphoreCreateBinary(xBinarySemaphore);
     //_dos_setvect(0x82, vExampleInterruptHandler);

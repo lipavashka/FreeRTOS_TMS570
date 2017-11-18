@@ -91,7 +91,7 @@ typedef enum systemInterrupt
 extern void esmHighInterrupt(void);
 extern void phantomInterrupt(void);
 extern void vPortPreemptiveTick(void);
-extern void adc1Group0Interrupt(void);
+// extern void adc1Group0Interrupt(void);
 extern void adc1Group1Interrupt(void);
 extern void vPortYeildWithinAPI(void);
 

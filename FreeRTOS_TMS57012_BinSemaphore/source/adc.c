@@ -52,6 +52,10 @@
 
 #include "adc.h"
 #include "sys_vim.h"
+#include "FreeRTOS.h"
+#include "os_semphr.h"
+
+extern xSemaphoreHandle xBinarySemaphore;
 
 /* USER CODE BEGIN (1) */
 /* USER CODE END */
@@ -322,6 +326,9 @@ void adcInit(void)
     
     /** - Setup parity */
     adcREG2->PARCR = 0x00000005U;
+
+    //** Enable interrupt **//
+    adcREG1->GxINTENA[1U] = 0x00000008;
 
     /**   @note This function has to be called before the driver can be used.\n
     *           This function has to be executed in privileged mode.\n
@@ -644,7 +651,7 @@ uint32 adcGetData(adcBASE_t *adc, uint32 group, adcData_t * data)
       }
 
 
-    adc->GxINTFLG[group] = 9U;
+    adc->GxINTFLG[group] = 6U;
 
     /**   @note The function adcInit has to be called before this function can be used.\n
     *           The user is responsible to initialize the message box.
@@ -1176,24 +1183,20 @@ void adc2GetConfigValue(adc_config_reg_t *config_reg, config_value_type_t type)
 /** @fn void adc1Group0Interrupt(void)
 *   @brief ADC1 Event Group Interrupt Handler
 */
-#pragma CODE_STATE(adc1Group0Interrupt, 32)
-#pragma INTERRUPT(adc1Group0Interrupt, IRQ)
+//#pragma CODE_STATE(adc1Group0Interrupt, 32)
+//#pragma INTERRUPT(adc1Group0Interrupt, IRQ)
 
 /* SourceId : ADC_SourceId_014 */
 /* DesignId : ADC_DesignId_013 */
 /* Requirements : HL_SR197, HL_SR196 */
-void adc1Group0Interrupt(void)
+/*void adc1Group0Interrupt(void)
 {
-/* USER CODE BEGIN (36) */
-/* USER CODE END */
 
     adcREG1->GxINTFLG[0U] = 9U;
 
     adcNotification(adcREG1, adcGROUP0);
 
-/* USER CODE BEGIN (37) */
-/* USER CODE END */
-}
+}*/
 
 /* USER CODE BEGIN (38) */
 /* USER CODE END */
@@ -1208,15 +1211,19 @@ void adc1Group0Interrupt(void)
 /* Requirements : HL_SR197, HL_SR196 */
 void adc1Group1Interrupt(void)
 {
-/* USER CODE BEGIN (39) */
-/* USER CODE END */
+    static portBASE_TYPE xHigherPriorityTaskWoken;
 
-    adcREG1->GxINTFLG[1U] = 9U;
-
+    adcREG1->GxINTFLG[1U] = 0x00000008;
     adcNotification(adcREG1, adcGROUP1);
 
-/* USER CODE BEGIN (40) */
-/* USER CODE END */
+    xHigherPriorityTaskWoken = pdFALSE;
+
+    xSemaphoreGiveFromISR(xBinarySemaphore, &xHigherPriorityTaskWoken);
+    if (xHigherPriorityTaskWoken == pdTRUE)
+    {
+        // portSWITCH_CONTEXT();
+        portYIELD_FROM_ISR( xHigherPriorityTaskWoken );
+    }
 }
 
 
