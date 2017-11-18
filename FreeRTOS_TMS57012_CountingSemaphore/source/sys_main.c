@@ -58,108 +58,100 @@
 #include "adc.h"
 #include "SFU_Serial.h"
 
-volatile unsigned long ulIdleCycleCount = 0;
 
+volatile unsigned long ulIdleCycleCount = 0;
 
 xSemaphoreHandle xBinarySemaphore;
 
+/* Дескрипторы очередей */
+xQueueHandle xIntegerQueue;
+xQueueHandle xAdcQueue;
 
-static void vPeriodicTask(void *pvParameters)
+static void vIntegerGenerator(void *pvParameters)
 {
+    portTickType xLastExecutionTime;
+    unsigned portLONG ulValueToSend = 0;
+    int i;
+
+    xLastExecutionTime = xTaskGetTickCount();
     while (1)
     {
-        vTaskDelay(100);
-        serialSendln("Periodic task - About to generate an interrupt.\r\n");
-        adcStartConversion(adcREG1, 1U);
-        serialSendln("Periodic task - Interrupt generated.\r\n\r\n\r\n");
+        vTaskDelayUntil(&xLastExecutionTime, 100);
+        for (i = 0; i < 1; i++)
+        {
+            xQueueSendToBack(xIntegerQueue, &ulValueToSend, 0);
+            ulValueToSend++;
+        }
+        serialSendln("Generator task - About to generate an interrupt");
+        adcStartConversion(adcREG1, 1U);  /* Эта инструкция сгенерирует прерывание. */
+        serialSendln("Generator task - Interrupt generated\r\n");
         gioSetBit(gioPORTB, 1, gioGetBit(gioPORTB, 1) ^ 1);
     }
 }
 
-
-static void vHandlerTask(void *pvParameters)
+static void vStringPrinter(void *pvParameters)
 {
+    long  AdcValue;
+    char _arr[10] = "";
 
     while (1)
     {
+        xQueueReceive(xAdcQueue, &AdcValue, portMAX_DELAY);
+        serialSendln("\r\nADC Data = "); ltoa(AdcValue, _arr); serialSendln(&_arr[0]); serialSendln("\r\n");
 
-        xSemaphoreTake(xBinarySemaphore, portMAX_DELAY);
-
-        serialSendln("Handler task - Processing event.\r\n");
         gioSetBit(gioPORTB, 2, gioGetBit(gioPORTB, 2) ^ 1);
     }
 }
+
+
 void vApplicationIdleHook(void)
 {
     ulIdleCycleCount++;
 }
 
-
 int main(void)
 {
-    unsigned char command[8];
     char arr[10] = "";
     long heapSize;
 
     _enable_IRQ();
     serialInit(115200);
 
-    serialSendln("\r\nBinary Semaphore example running!\r\n");
+    serialSendln("\r\nCounting Semaphore example running!\r\n");
 
     gioInit();
-    // adcInit();
-    // adcStartConversion(adcREG1, adcGROUP0);
 
-    adcData_t adc_data; //ADC Data Structure
-    adcData_t *adc_data_ptr = &adc_data; //ADC Data Pointer
-    volatile unsigned int NumberOfChars, value; //Declare variables
+    adcInit();
 
-    adcInit(); //Initializes the ADC module
 
-    /*while (1)
+    xIntegerQueue = xQueueCreate(10, sizeof(unsigned long));
+    xAdcQueue = xQueueCreate(10, sizeof(int *));
+
+    if ((xTaskCreate(vIntegerGenerator, "IntGen", configMINIMAL_STACK_SIZE, NULL, 1, NULL)) != pdTRUE)
     {
-        adcStartConversion(adcREG1, 1U); //Start ADC conversion
-        // while (!adcIsConversionComplete(adcREG1, 1U)); //Wait for ADC conversion
-        adcGetData(adcREG1, 1U, adc_data_ptr); //Store conversion into ADC pointer
-        value = (unsigned int) adc_data_ptr->value;
-        NumberOfChars = ltoa(value, (char *) command);
-        serialSendln("Adc = "); ltoa(value, arr); serialSendln(&arr[0]); serialSendln("\r\n");
-    }*/
-
-    vSemaphoreCreateBinary(xBinarySemaphore);
-    //_dos_setvect(0x82, vExampleInterruptHandler);
-
-    if (xBinarySemaphore != NULL)
-    {
-
-        if ((xTaskCreate(vHandlerTask, "Handler", configMINIMAL_STACK_SIZE, NULL, 3, NULL)) != pdTRUE)
-        {
-            serialSendln("Couldn't Create vHandlerTask\r\n");
-            while (1);
-        }
-        else
-        {
-            serialSendln("Created vHandlerTask\r\n");
-        }
-
-        if ((xTaskCreate(vPeriodicTask, "Periodic", configMINIMAL_STACK_SIZE, NULL, 1, NULL)) != pdTRUE)
-        {
-            serialSendln("Couldn't Create vPeriodicTask\r\n");
-            while (1);
-        }
-        else
-        {
-            serialSendln("Created vPeriodicTask\r\n");
-        }
-
-        heapSize = xPortGetFreeHeapSize();
-        serialSendln("Heap Size = ");
-        ltoa(heapSize, arr);
-        serialSendln(&arr[0]);
-        serialSendln("\r\n");
-
-        vTaskStartScheduler();
+        serialSendln("Couldn't Create IntGen\r\n");
+        while (1);
     }
+    else
+    {
+        serialSendln("Created IntGen\r\n");
+    }
+
+    if ((xTaskCreate(vStringPrinter, "String", configMINIMAL_STACK_SIZE, NULL, 2, NULL)) != pdTRUE)
+    {
+        serialSendln("Couldn't Create IntGen\r\n");
+        while (1);
+    }
+    else
+    {
+        serialSendln("Created IntGen\r\n");
+    }
+
+    heapSize = xPortGetFreeHeapSize();
+    serialSendln("Heap Size = "); ltoa(heapSize, arr); serialSendln(&arr[0]);serialSendln("\r\n");
+
+    vTaskStartScheduler();
+
 
     while (1);
 
