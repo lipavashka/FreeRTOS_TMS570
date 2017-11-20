@@ -163,32 +163,32 @@ endif
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXE_OUTPUTS += \
-FreeRTOS_TMS57012_CountingSemaphore.out \
+FreeRTOS_TMS57012_Mutex.out \
 
 EXE_OUTPUTS__QUOTED += \
-"FreeRTOS_TMS57012_CountingSemaphore.out" \
+"FreeRTOS_TMS57012_Mutex.out" \
 
 BIN_OUTPUTS += \
-FreeRTOS_TMS57012_CountingSemaphore.hex \
+FreeRTOS_TMS57012_Mutex.hex \
 
 BIN_OUTPUTS__QUOTED += \
-"FreeRTOS_TMS57012_CountingSemaphore.hex" \
+"FreeRTOS_TMS57012_Mutex.hex" \
 
 
 # All Target
-all: FreeRTOS_TMS57012_CountingSemaphore.out
+all: FreeRTOS_TMS57012_Mutex.out
 
 # Tool invocations
-FreeRTOS_TMS57012_CountingSemaphore.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
+FreeRTOS_TMS57012_Mutex.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: ARM Linker'
-	"E:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.4.LTS/bin/armcl" -mv7R4 --code_state=32 --float_support=VFPv3D16 --abi=eabi -g --display_error_number --diag_wrap=off --diag_warning=225 --enum_type=packed -z -m"FreeRTOS_TMS57012_CountingSemaphore.map" --heap_size=0x800 --stack_size=0x800 -i"E:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.4.LTS/lib" -i"E:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.4.LTS/include" --reread_libs --display_error_number --diag_wrap=off --warn_sections --xml_link_info="FreeRTOS_TMS57012_CountingSemaphore_linkInfo.xml" --rom_model --be32 -o "FreeRTOS_TMS57012_CountingSemaphore.out" $(ORDERED_OBJS)
+	"E:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.4.LTS/bin/armcl" -mv7R4 --code_state=32 --float_support=VFPv3D16 -g --diag_warning=225 --diag_wrap=off --display_error_number --enum_type=packed --abi=eabi -z -m"FreeRTOS_TMS57012_Mutex.map" --heap_size=0x800 --stack_size=0x800 -i"E:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.4.LTS/lib" -i"E:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.4.LTS/include" --reread_libs --diag_wrap=off --display_error_number --warn_sections --xml_link_info="FreeRTOS_TMS57012_Mutex_linkInfo.xml" --rom_model --be32 -o "FreeRTOS_TMS57012_Mutex.out" $(ORDERED_OBJS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
-FreeRTOS_TMS57012_CountingSemaphore.hex: $(EXE_OUTPUTS)
+FreeRTOS_TMS57012_Mutex.hex: $(EXE_OUTPUTS)
 	@echo 'Invoking: ARM Hex Utility'
-	"E:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.4.LTS/bin/armhex"  -o "FreeRTOS_TMS57012_CountingSemaphore.hex" $(EXE_OUTPUTS__QUOTED)
+	"E:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.4.LTS/bin/armhex"  -o "FreeRTOS_TMS57012_Mutex.hex" $(EXE_OUTPUTS__QUOTED)
 	@echo 'Finished building: $@'
 	@echo ' '
 

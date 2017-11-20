@@ -1,7 +1,7 @@
 ******************************************************************************
                   TI ARM Linker PC v16.9.4                     
 ******************************************************************************
->> Linked Mon Nov 20 11:46:17 2017
+>> Linked Mon Nov 20 12:38:05 2017
 
 OUTPUT FILE NAME:   <FreeRTOS_TMS57012_CountingSemaphore.out>
 ENTRY POINT SYMBOL: "_c_int00"  address: 00010274

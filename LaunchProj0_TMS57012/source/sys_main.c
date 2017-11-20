@@ -98,7 +98,7 @@ void vTask2(void *pvParameters)
     volatile long ul;
     volatile TaskParam *pxTaskParam;
     //portTickType xLastWakeTime;
-    char arr[10] ="" ;
+    //char arr[10] ="" ;
     unsigned portBASE_TYPE uxPriority;
     static int cntPriority = 0;
 
@@ -246,7 +246,7 @@ int main(void)
 
     while (1);
 
-    return 0;
+    //return 0;
 }
 
 /* USER CODE BEGIN (4) */
