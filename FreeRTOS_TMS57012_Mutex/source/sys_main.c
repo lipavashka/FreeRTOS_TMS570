@@ -67,50 +67,47 @@ xSemaphoreHandle xBinarySemaphore;
 xQueueHandle xIntegerQueue;
 xQueueHandle xAdcQueue;
 
-static void vIntegerGenerator(void *pvParameters)
-{
-    portTickType xLastExecutionTime;
-    unsigned portLONG ulValueToSend = 0;
-    int i;
-
-    xLastExecutionTime = xTaskGetTickCount();
-    while (1)
-    {
-        vTaskDelayUntil(&xLastExecutionTime, 100);
-        for (i = 0; i < 3; i++)
-        {
-            xQueueSendToBack(xIntegerQueue, &ulValueToSend, 0);
-            ulValueToSend++;
-        }
-        serialSendln("\r\nGenerator task - About to generate an interrupt\r\n");
-        adcStartConversion(adcREG1, 1U);  /* Эта инструкция сгенерирует прерывание. */
-        serialSendln("Generator task - Interrupt generated\r\n");
-        gioSetBit(gioPORTB, 1, gioGetBit(gioPORTB, 1) ^ 1);
-    }
-}
-
-static void vStringPrinter(void *pvParameters)
-{
-    long  AdcValue;
-    char _arr[10] = "";
-
-    while (1)
-    {
-        xQueueReceive(xAdcQueue, &AdcValue, portMAX_DELAY);
-        serialSendln("ADC Data = "); ltoa(AdcValue, _arr); serialSendln(&_arr[0]); serialSendln("\r\n");
-        // taskENTER_CRITICAL();
-        vTaskSuspendAll();
-        gioSetBit(gioPORTB, 2, gioGetBit(gioPORTB, 2) ^ 1);
-        // taskEXIT_CRITICAL();
-        xTaskResumeAll();
-    }
-}
+// Mutex Descriptor
+volatile xSemaphoreHandle xMutex;
 
 
 void vApplicationIdleHook(void)
 {
     ulIdleCycleCount++;
 }
+
+
+static void prvNewPrintString(const portCHAR *pcString)
+{
+    portCHAR *p;
+    int i;
+    p = (char *)pcString;
+    xSemaphoreTake( xMutex, portMAX_DELAY );
+    // taskENTER_CRITICAL();
+    // vTaskSuspendAll();
+    while (*p)
+    {
+        sciSend(scilinREG, 1, (unsigned char *) p);
+        p++;
+        for (i = 0; i < 10000; i++) ;
+    }
+    // taskEXIT_CRITICAL();
+    // xTaskResumeAll();
+    xSemaphoreGive( xMutex );
+}
+
+static void prvPrintTask(void *pvParameters)
+{
+    char *pcStringToPrint;
+    pcStringToPrint = (char *) pvParameters;
+    while (1)
+    {
+        prvNewPrintString(pcStringToPrint);
+        /* Блокировать задачу на промежуток времени случайной длины: от 0 до 500 мс. */
+        vTaskDelay((rand() % 500));
+    }
+}
+
 
 int main(void)
 {
@@ -120,34 +117,34 @@ int main(void)
     _enable_IRQ();
     serialInit(115200);
 
-    serialSendln("\r\n\r\nCounting Semaphore example running!\r\n");
+    serialSendln("\r\n\r\nMutex example running!\r\n");
 
     gioInit();
 
-    adcInit();
 
+    // mutex
+    xMutex = xSemaphoreCreateMutex();
+    if (xMutex != NULL)
+    {
 
-    xIntegerQueue = xQueueCreate(10, sizeof(unsigned long));
-    xAdcQueue = xQueueCreate(10, sizeof(int *));
-
-    if ((xTaskCreate(vIntegerGenerator, "IntGen", configMINIMAL_STACK_SIZE, NULL, 1, NULL)) != pdTRUE)
-    {
-        serialSendln("Couldn't Create vIntegerGenerator\r\n");
-        while (1);
-    }
-    else
-    {
-        serialSendln("Created IntGen\r\n");
-    }
-
-    if ((xTaskCreate(vStringPrinter, "Printer", configMINIMAL_STACK_SIZE, NULL, 2, NULL)) != pdTRUE)
-    {
-        serialSendln("Couldn't Create vStringPrinter\r\n");
-        while (1);
-    }
-    else
-    {
-        serialSendln("Created vStringPrinter\r\n");
+        if ((xTaskCreate(prvPrintTask, "Print1", configMINIMAL_STACK_SIZE, "Task 1 **************************************\r\n", 1, NULL)) != pdTRUE)
+        {
+            serialSendln("Couldn't Create vStringPrinter\r\n");
+            while (1);
+        }
+        else
+        {
+            serialSendln("Created vStringPrinter\r\n");
+        }
+        if ((xTaskCreate(prvPrintTask, "Print2", configMINIMAL_STACK_SIZE, "Task 2 **************************************\r\n", 2, NULL)) != pdTRUE)
+        {
+            serialSendln("Couldn't Create vStringPrinter\r\n");
+            while (1);
+        }
+        else
+        {
+            serialSendln("Created vStringPrinter\r\n");
+        }
     }
 
     heapSize = xPortGetFreeHeapSize();
