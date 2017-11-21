@@ -1,3 +1,4 @@
+Example for TMS570LS1224
 1. BinSemaphore
 2. CountingSemaphore
 3. Mutex
