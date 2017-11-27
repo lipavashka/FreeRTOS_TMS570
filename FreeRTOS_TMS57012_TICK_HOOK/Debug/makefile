@@ -169,10 +169,10 @@ EXE_OUTPUTS__QUOTED += \
 "FreeRTOS_TMS57012_TICK_HOOK.out" \
 
 BIN_OUTPUTS += \
-FreeRTOS_TMS57012_TICK_HOOK.hex \
+FreeRTOS_TMS57012_TICK_HOOK.bin \
 
 BIN_OUTPUTS__QUOTED += \
-"FreeRTOS_TMS57012_TICK_HOOK.hex" \
+"FreeRTOS_TMS57012_TICK_HOOK.bin" \
 
 
 # All Target
@@ -185,12 +185,14 @@ FreeRTOS_TMS57012_TICK_HOOK.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 	"E:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.4.LTS/bin/armcl" -mv7R4 --code_state=32 --float_support=VFPv3D16 -g --diag_warning=225 --diag_wrap=off --display_error_number --enum_type=packed --abi=eabi -z -m"FreeRTOS_TMS57012_TICK_HOOK.map" --heap_size=0x800 --stack_size=0x800 -i"E:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.4.LTS/lib" -i"E:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.4.LTS/include" --reread_libs --diag_wrap=off --display_error_number --warn_sections --xml_link_info="FreeRTOS_TMS57012_TICK_HOOK_linkInfo.xml" --rom_model --be32 -o "FreeRTOS_TMS57012_TICK_HOOK.out" $(ORDERED_OBJS)
 	@echo 'Finished building target: $@'
 	@echo ' '
+	@$(MAKE) --no-print-directory post-build
 
-FreeRTOS_TMS57012_TICK_HOOK.hex: $(EXE_OUTPUTS)
+FreeRTOS_TMS57012_TICK_HOOK.bin: $(EXE_OUTPUTS)
 	@echo 'Invoking: ARM Hex Utility'
-	"E:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.4.LTS/bin/armhex"  -o "FreeRTOS_TMS57012_TICK_HOOK.hex" $(EXE_OUTPUTS__QUOTED)
+	"E:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.4.LTS/bin/armhex"  -o "FreeRTOS_TMS57012_TICK_HOOK.bin" $(EXE_OUTPUTS__QUOTED)
 	@echo 'Finished building: $@'
 	@echo ' '
+	@$(MAKE) --no-print-directory post-build
 
 # Other Targets
 clean:
@@ -199,6 +201,10 @@ clean:
 	-$(RM) "SFUsat\SFU_Serial.d" "source\adc.d" "source\can.d" "source\crc.d" "source\dcc.d" "source\ecap.d" "source\eqep.d" "source\esm.d" "source\etpwm.d" "source\gio.d" "source\het.d" "source\i2c.d" "source\lin.d" "source\mibspi.d" "source\notification.d" "source\os_croutine.d" "source\os_event_groups.d" "source\os_heap.d" "source\os_list.d" "source\os_mpu_wrappers.d" "source\os_port.d" "source\os_queue.d" "source\os_tasks.d" "source\os_timer.d" "source\pinmux.d" "source\sci.d" "source\spi.d" "source\sys_dma.d" "source\sys_main.d" "source\sys_pcr.d" "source\sys_phantom.d" "source\sys_pmm.d" "source\sys_selftest.d" "source\sys_startup.d" "source\sys_vim.d" "source\system.d" 
 	-$(RM) "source\dabort.d" "source\os_portasm.d" "source\sys_core.d" "source\sys_intvecs.d" "source\sys_mpu.d" "source\sys_pmu.d" 
 	-@echo 'Finished clean'
+	-@echo ' '
+
+post-build:
+	-"E:/ti/ccsv7/utils/tiobj2bin/tiobj2bin.bat" "FreeRTOS_TMS57012_TICK_HOOK.out" "FreeRTOS_TMS57012_TICK_HOOK.bin" "E:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.4.LTS/bin/armofd.exe" "E:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.4.LTS/bin/armhex.exe" "E:/ti/ccsv7/utils/tiobj2bin/mkhex4bin.exe"
 	-@echo ' '
 
 .PHONY: all clean dependents
